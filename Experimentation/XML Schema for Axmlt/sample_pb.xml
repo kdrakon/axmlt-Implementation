@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<axmlt:policybase xmlns:axmlt="scm.uws.edu.au" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="scm.uws.edu.au axmlt_policybase.xsd ">
+  <axmlt:rule>
+    <axmlt:head-statement>
+      <axmlt:relationship-statement>
+        <axmlt:below>
+          <axmlt:value1>axmlt:value1</axmlt:value1>
+          <axmlt:value2>axmlt:value2</axmlt:value2>
+        </axmlt:below>
+      </axmlt:relationship-statement>
+    </axmlt:head-statement>
+    <axmlt:body-statement>
+      <axmlt:relationship-statement>
+        <axmlt:below>
+          <axmlt:value1>axmlt:value1</axmlt:value1>
+          <axmlt:value2>axmlt:value2</axmlt:value2>
+        </axmlt:below>
+      </axmlt:relationship-statement>
+    </axmlt:body-statement>
+  </axmlt:rule>
+    <axmlt:rule>
+    <axmlt:head-statement>
+      <axmlt:relationship-statement>
+        <axmlt:below>
+          <axmlt:value1>axmlt:value1</axmlt:value1>
+          <axmlt:value2>axmlt:value2</axmlt:value2>
+        </axmlt:below>
+      </axmlt:relationship-statement>
+    </axmlt:head-statement>
+    <axmlt:body-statement>
+      <axmlt:relationship-statement>
+        <axmlt:below>
+          <axmlt:value1>axmlt:value1</axmlt:value1>
+          <axmlt:value2>axmlt:value2</axmlt:value2>
+        </axmlt:below>
+      </axmlt:relationship-statement>
+    </axmlt:body-statement>
+    <axmlt:body-statement>
+      <axmlt:relationship-statement>
+        <axmlt:below>
+          <axmlt:value1>axmlt:value1</axmlt:value1>
+          <axmlt:value2>axmlt:value2</axmlt:value2>
+        </axmlt:below>
+      </axmlt:relationship-statement>
+    </axmlt:body-statement>    
+  </axmlt:rule>
+</axmlt:policybase>

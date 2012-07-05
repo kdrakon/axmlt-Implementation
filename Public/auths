@@ -1,0 +1,8 @@
+auth(joel,nutrition,_dailyvalues,write,friday)
+auth(joel,nutrition,_food_calories,read,tuesday)
+auth(joel,nutrition,_dailyvalues_carb,read,tuesday)
+auth(joel,nutrition,_food_carb,read,tuesday)
+auth(pat,nutrition,_,read,wednesday)
+auth(pat,nutrition,_,write,wednesday)
+auth(sean,nutrition,_,read,monday)
+auth(sean,nutrition,_,write,monday)

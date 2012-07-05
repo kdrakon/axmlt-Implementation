@@ -1,0 +1,550 @@
+#!/usr/bin/python
+import sys #used for system arguments; sys.argv[n]
+import re #regular expressions module
+import hashlib
+import random
+import time #will be used for benchmarking
+import subprocess
+
+#created on Wed 04 Aug 2010 11:11:18 
+
+'''DEFAULT ARGS THAT WORK
+    self, n_subjects=100, n_roles=50, min_role_priv=1, max_role_priv=2, 
+    n_intervals=25, n_interval_rel=10,
+    n_documents=5, min_xpaths=1, max_xpaths=3,
+    n_grants=50, n_role_rel=20,
+    n_var_rules=10, n_var=2, n_con_rules=10, n_pos_body=2, n_neg_body=2'''
+
+
+########  CLASS DEFINITIONS  ########
+
+class generator:
+    '''This class generates a policy base file.'''
+    
+    sign_pref = 1 #preference to postive or negative rules
+    privs = ("read", "write") #constant for privileges allowed
+    
+    '----------------------------------------------------------------------------------------------'
+    
+    def __init__(
+    self, n_subjects=100, n_roles=50, min_role_priv=1, max_role_priv=2, 
+    n_intervals=25, n_interval_rel=10,
+    n_documents=5, min_xpaths=1, max_xpaths=3,
+    n_grants=50, n_role_rel=20,
+    n_var_rules=1, n_var=2, n_con_rules=1, n_pos_body=2, n_neg_body=2
+    ):
+        'On instantiation, get argument values'
+        self.n_subjects = n_subjects
+        
+        self.n_roles = n_roles
+        self.min_role_priv = min_role_priv #min number of times this role can have different privileges
+        self.max_role_priv = max_role_priv #max number of times this role can have different privileges
+        
+        self.n_intervals = n_intervals
+        self.n_interval_rel = n_interval_rel #number of interval relationships
+        
+        self.n_documents = n_documents
+        self.min_xpaths = min_xpaths #min number of xpaths per document
+        self.max_xpaths = max_xpaths #max number of xpaths per document  
+        
+        self.n_grants = n_grants
+        self.n_role_rel = n_role_rel
+        
+        self.n_var_rules = n_var_rules
+        self.n_con_rules = n_con_rules
+        self.n_var = n_var           #definition is backwards, this is actually the number of constants allowed in a role (3 - n_var = number of vars used)
+        self.n_pos_body = n_pos_body #max (at most) positive body statements
+        self.n_neg_body = n_neg_body #max (at most) negative body statements
+        
+    '----------------------------------------------------------------------------------------------'
+    
+    def createConstants(self):
+        '''This function will generate all the constants (ie. roles, subjects, objects, etc.)
+        for the new policy base file.  They will be created based on argument values.'''
+        
+        'Create set of subjects'
+        self.subjects = list()
+        for c in range(self.n_subjects):
+            name = 'subject' + str(c)
+            self.subjects.append(name)
+            
+        'Create set of role names'
+        self.role_names = list()
+        for c in range(self.n_roles):
+            name = 'role' + str(c)
+            self.role_names.append(name)
+            
+        'Create set of intervals'
+        self.intervals = list()
+        for c in range(self.n_intervals):
+            name = 'int' + str(c)
+            self.intervals.append(name)
+            
+        'Create set of documents'    
+        self.documents = list()
+        'Create a linked dictionary of XPaths to the documents set'
+        self.xpaths = dict()
+        
+        for c in range(self.n_documents):
+            name = 'doc' + str(c)
+            self.documents.append(name)  
+            'generate a random number of xpaths for the document'
+            rand_n_xpath = random.randint(self.min_xpaths, self.max_xpaths)
+            temp_xpath_list = list()
+            for xc in range(rand_n_xpath):
+                xpath = name + "xpath" + str(xc)
+                temp_xpath_list.append(xpath)
+            self.xpaths[name] = temp_xpath_list
+        
+            
+    '----------------------------------------------------------------------------------------------'        
+    
+    def createRoles(self):
+        '''This function will create a random number of roles for the pb.'''
+        
+        'Create a sign preference set.'
+        if self.sign_pref == 1:
+            signs = ("pp", "pp", "pp", "mm", "mm")
+        else:
+            signs = ("pp", "pp", "mm", "mm", "mm")
+            
+        'init the list of roles'    
+        self.str_roles = list()
+            
+        'Generate all the roles'
+        for role_name in self.role_names:
+            repeat = random.randint(self.min_role_priv, self.max_role_priv) #number of times to repeat the role with diff privs
+            for r in range(repeat):
+                rand_sign = random.randint(0, len(signs)-1)
+                rand_doc = random.randint(0, len(self.documents)-1)
+                rand_xpath = random.randint(0, len(self.xpaths[self.documents[rand_doc]])-1)
+                rand_priv = random.randint(0, len(self.privs)-1)
+                
+                new_role = "role(" + role_name + "," + signs[rand_sign] + "," + self.documents[rand_doc] + "," + (self.xpaths[self.documents[rand_doc]])[rand_xpath] + "," + self.privs[rand_priv] + ")."
+                self.str_roles.append(new_role)
+               
+       
+    '----------------------------------------------------------------------------------------------'                        
+    
+    def createIntervalRelationships(self):
+        '''Generate random interval relationships'''
+
+        self.interval_relationships = list()
+        ti_relationships = ("during", "starts", "finishes", "before", "overlap", "meets", "equal")
+
+        for c in range(self.n_interval_rel):
+            rand_rel = random.randint(0, len(ti_relationships)-1)
+            rand_int1 = random.randint(0, len(self.intervals)-1)
+            rand_int2 = random.randint(0, len(self.intervals)-1)
+            while rand_int1 == rand_int2:
+                rand_int2 = random.randint(0, len(self.intervals)-1)
+            
+            r = ti_relationships[rand_rel] + "(" + self.intervals[rand_int1] + "," + self.intervals[rand_int2] + ")."
+            self.interval_relationships.append(r)
+            
+    '----------------------------------------------------------------------------------------------'                        
+    
+    def createRoleRelationships(self):
+        '''Generate random role relationships'''
+
+        self.role_relationships = list()
+        r_relationships = ("below", "separate")
+
+        for c in range(self.n_role_rel):
+            rand_rel = random.randint(0, len(r_relationships)-1)
+            rand_role1 = random.randint(0, len(self.role_names)-1)
+            rand_role2 = random.randint(0, len(self.role_names)-1)
+            while rand_role1 == rand_role2:
+                rand_role2 = random.randint(0, len(self.role_names)-1)
+            
+            rr = r_relationships[rand_rel] + "(" + self.role_names[rand_role1] + "," + self.role_names[rand_role2] + ")."
+            self.role_relationships.append(rr)
+            
+    '----------------------------------------------------------------------------------------------'
+    
+    def createGrantStatements(self):
+        '''Create some grant statements for subjects and roles.'''
+        self.grants = list()
+        
+        for c in range(self.n_grants):
+            rand_subject = random.randint(0, len(self.subjects)-1)
+            rand_role = random.randint(0, len(self.role_names)-1)
+            rand_int = random.randint(0, len(self.intervals)-1)
+            
+            g = "grant(" + self.subjects[rand_subject] + "," + self.role_names[rand_role] + "," + self.intervals[rand_int] + ")."
+            self.grants.append(g)
+        
+
+    '----------------------------------------------------------------------------------------------'
+    
+    def createVariableRules(self):
+        '''Create some variable rules.'''
+        #n_var_rules=10, n_var=1, n_pos_body=1, n_neg_body=1
+
+        self.variable_rules = list()
+        
+        for x in range(self.n_var_rules):
+        
+            'first, randomly select what kind of variables will be used'        
+            rand_var_set = self.generateRandomVariableSet()
+            rand_var_type1 = rand_var_set[0]
+            rand_var_type2 = rand_var_set[1]
+            rand_var_type3 = rand_var_set[2]        
+            
+                    
+            'create a random conditional rule; this will be hard-coded as a mix between grants, temporal, and role relationships'
+            vr = "grant(" + rand_var_type1[0] + "," + rand_var_type1[1] + "," + rand_var_type1[2] + ")"
+            vr += ":-"
+            
+            'append positive body statements'
+            prev_vs = ''
+            for c in range(self.n_pos_body):
+                new_vs = self.generateRandomVariableStatement(rand_var_type1, rand_var_type2)
+                if new_vs != prev_vs and new_vs != "":
+                    vr += new_vs
+                    vr += ","
+                prev_vs = new_vs
+                
+            'append negative body statements'
+            prev_vs = ''
+            for c in range(self.n_neg_body):
+                new_vs = self.generateRandomVariableStatement(rand_var_type1, rand_var_type3)
+                if new_vs != prev_vs and new_vs != "":
+                    vr += "not "
+                    vr += new_vs
+                    vr += ","
+                prev_vs = new_vs
+                
+            vr = vr.rstrip(",")               
+            vr += "."
+
+            self.variable_rules.append(vr)
+       
+    '----------------------------------------------------------------------------------------------'                        
+    
+    def generateRandomVariableSet(self):
+        '''Generate a random set of subjects, role, & interval variables'''
+        
+        rand_var_type1 = ['S', 'R', 'I']
+        rand_var_type2 = ['S', 'R', 'I']
+        rand_var_type3 = ['S', 'R', 'I']        
+        prev_rvt = -1
+        
+        for c in range(self.n_var):
+
+            rvt = random.randint(0, 2) #subject, role, interval
+            
+            while rvt == prev_rvt:
+                rvt = random.randint(0, 2)
+    
+            if rvt != prev_rvt:
+                if rvt == 0:
+                    rand_var_type1[0] = self.subjects[random.randint(0, len(self.subjects)-1)]
+                    rand_var_type2[0] = self.subjects[random.randint(0, len(self.subjects)-1)]
+                    rand_var_type3[0] = self.subjects[random.randint(0, len(self.subjects)-1)]                                                            
+                elif rvt == 1:
+                    rand_var_type1[1] = self.role_names[random.randint(0, len(self.role_names)-1)]                    
+                    rand_var_type2[1] = self.role_names[random.randint(0, len(self.role_names)-1)]                                        
+                    rand_var_type3[1] = self.role_names[random.randint(0, len(self.role_names)-1)]                                                            
+                elif rvt == 2:
+                    rand_var_type1[2] = self.intervals[random.randint(0, len(self.intervals)-1)]
+                    rand_var_type2[2] = self.intervals[random.randint(0, len(self.intervals)-1)]                    
+                    rand_var_type3[2] = self.intervals[random.randint(0, len(self.intervals)-1)]  
+                                                          
+            prev_rvt = rvt
+
+        
+        rand_var_set = list()        
+        rand_var_set.append(rand_var_type1)
+        rand_var_set.append(rand_var_type2)     
+        rand_var_set.append(rand_var_type3)           
+        
+        return rand_var_set
+
+    '----------------------------------------------------------------------------------------------'                        
+    
+    def generateRandomVariableStatement(self, varsetA, varsetB):
+        '''Create a random variable statement'''
+        rand_stat_type = random.randint(0, 2) # grant, role relationship, temporal relationship
+        vs = ""
+        
+        if rand_stat_type == 1 and varsetB[1] != varsetA[1]: #make a role relationship
+            rand_role_rel = random.randint(0,2) # below, separate
+            if rand_role_rel == 0: #below
+                vs = "below(" + varsetB[1] + "," + varsetA[1] + ")"            
+            else:
+                vs = "separate(" + varsetB[1] + "," + varsetA[1] + ")"
+                
+        elif rand_stat_type == 2 and varsetB[2] != varsetA[2]: #make a temporal relationship
+            ti_relationships = ("during", "starts", "finishes", "before", "overlap", "meets", "equal")
+            rand_int_rel = ti_relationships[random.randint(0, len(ti_relationships)-1)]
+            vs = rand_int_rel + "(" + varsetB[2] + "," + varsetA[2] + ")"
+
+        elif rand_stat_type == 0: #make a grant statement       
+            vs = "grant(" + varsetB[0] + "," + varsetB[1] + "," + varsetB[2] + ")"            
+            
+        return vs
+        
+    '----------------------------------------------------------------------------------------------'                        
+    
+    def createConstantRules(self):    
+        '''Create some constant rules.'''
+
+        self.constant_rules = list()
+        
+        for x in range(self.n_con_rules):
+        
+            '''first, create some random variable sets'''
+            rand_var_type1 = list() # S, R, I
+            rand_var_type2 = list()
+            rand_var_type3 = list()
+        
+            rand_var_type1.append(self.subjects[random.randint(0, len(self.subjects)-1)])
+            rand_var_type2.append(self.subjects[random.randint(0, len(self.subjects)-1)])
+            rand_var_type3.append(self.subjects[random.randint(0, len(self.subjects)-1)])                                                          
+            rand_var_type1.append(self.role_names[random.randint(0, len(self.role_names)-1)])                 
+            rand_var_type2.append(self.role_names[random.randint(0, len(self.role_names)-1)])                                        
+            rand_var_type3.append(self.role_names[random.randint(0, len(self.role_names)-1)])                                                            
+            rand_var_type1.append(self.intervals[random.randint(0, len(self.intervals)-1)])
+            rand_var_type2.append(self.intervals[random.randint(0, len(self.intervals)-1)])                    
+            rand_var_type3.append(self.intervals[random.randint(0, len(self.intervals)-1)])             
+                    
+            'create a random conditional rule; this will be hard-coded as a mix between grants, temporal, and role relationships'
+            vr = "grant(" + rand_var_type1[0] + "," + rand_var_type1[1] + "," + rand_var_type1[2] + ")"
+            vr += ":-"
+            
+            'append positive body statements'
+            prev_vs = ''
+            for c in range(self.n_pos_body):
+                new_vs = self.generateRandomVariableStatement(rand_var_type1, rand_var_type2)
+                if new_vs != prev_vs and new_vs != "":
+                    vr += new_vs
+                    vr += ","
+                prev_vs = new_vs
+                
+            'append negative body statements'
+            prev_vs = ''
+            for c in range(self.n_neg_body):
+                new_vs = self.generateRandomVariableStatement(rand_var_type1, rand_var_type3)
+                if new_vs != prev_vs and new_vs != "":
+                    vr += "not "
+                    vr += new_vs
+                    vr += ","
+                prev_vs = new_vs
+                
+            vr = vr.rstrip(",")               
+            vr += "."
+
+            self.constant_rules.append(vr)   
+       
+       
+    '----------------------------------------------------------------------------------------------'                        
+    
+    def fixWeakVariables(self, rules):
+        '''gringo/clasp is very strict about variable usage.  If it doesn't know what a possible 
+        variable can be to a certain degree, it will report a "weakly restricted variables" error.
+        To alleviate this, and hopefully avoid it in all possibilities, this function will search through each
+        user created rule that uses variables and try to figure out what that possible variable is.  
+        It will then introduce a new predicate statement for that variable to narrow its meaning down.'''
+        
+        '''use regexp to find variables, designated with a capital letter, but only in the body, not 
+        head of the rule. for each found, modify the rule, pop off the old one, and replace it
+        with the modified one.'''
+                
+        for rule in rules:
+        
+            mod_rule = rule.rstrip('.')
+            i = rules.index(rule)        
+
+               
+            'regular expression for subject variables in grant statements'
+            vre = re.compile(r'grant\(([A-Z]{1}\w*?),')
+            matches = vre.findall(rule)
+            if len(matches) != 0:               
+                for m in matches:                    
+                    if rule.find("subjects(" + m + ")") == -1 and mod_rule.find("subjects(" + m + ")") == -1: #dont add the predicate if it already exists
+                        mod_rule += ", subjects(" + m + ")"
+
+                    
+            'regular expression for role variables in grant statements'
+            vre = re.compile(r'grant\(\w*?,([A-Z]{1}\w*?),')
+            matches = vre.findall(rule)
+            if len(matches) != 0:                          
+                for m in matches:                    
+                    if rule.find("roles(" + m + ")") == -1 and mod_rule.find("roles(" + m + ")") == -1: #dont add the predicate if it already exists
+                        mod_rule += ", roles(" + m + ")"
+
+                
+            'regular expression for interval variables in grant statements'
+            vre = re.compile(r'grant\(\w*?,\w*?,([A-Z]{1}\w*?)\)')
+            matches = vre.findall(rule)                
+            if len(matches) != 0:
+                for m in matches:                    
+                    if rule.find("tempints(" + m + ")") == -1 and mod_rule.find("tempints(" + m + ")") == -1: #dont add the predicate if it already exists
+                        mod_rule += ", tempints(" + m + ")"
+           
+               
+            'regular expression for interval variables used in relationships'
+            vre = re.compile(r'(during|starts|finishes|before|overlap|meets|equal)\(([A-Z]{1}\w*?),')
+            matches = vre.findall(rule)
+            if len(matches) != 0:
+                for m in matches:              
+                    if rule.find("tempints(" + m[1] + ")") == -1 and mod_rule.find("tempints(" + m[1] + ")") == -1: #dont add the predicate if it already exists
+                         mod_rule += ", tempints(" + m[1] + ")"
+                        
+            'replace the old rule with the modified one if it was modified'
+            if mod_rule == rule.rstrip('.'):
+                continue #skip to next rule
+            else:
+                mod_rule += "."                   
+                rules.pop(i)
+                rules.insert(i, mod_rule)
+                
+        return rules
+                       
+    '----------------------------------------------------------------------------------------------'                        
+    
+    def writePB(self, alpfile, langrules):
+        '''Write the translated PB to a file document.'''
+        fh = open(alpfile, 'w+')
+        
+        'first output the constants'
+        varline = ""
+        
+        varline = "roles("
+        for role in self.role_names:
+            varline += role 
+            varline += ";"
+        varline = varline.rstrip(";") 
+        varline += ").\n"
+        fh.write(varline)
+        
+        varline = "subjects("
+        for subject in self.subjects:
+            varline += subject 
+            varline += ";"
+        varline = varline.rstrip(";") 
+        varline += ").\n"
+        fh.write(varline)     
+        
+        varline = "xpaths("
+        for xpathdoc in self.xpaths.keys():
+            for xpath in self.xpaths[xpathdoc]:
+                varline += xpath 
+                varline += ";"
+        varline = varline.rstrip(";") 
+        varline += ").\n"
+        fh.write(varline)   
+        
+        varline = "documents("
+        for document in self.documents:
+            varline += document 
+            varline += ";"
+        varline = varline.rstrip(";") 
+        varline += ").\n"
+        fh.write(varline)      
+        
+        varline = "tempints("
+        for tempint in self.intervals:
+            varline += tempint 
+            varline += ";"
+        varline = varline.rstrip(";") 
+        varline += ").\n\n"
+        fh.write(varline)
+        
+        
+        'output the roles'
+        for role in self.str_roles:
+            fh.write(role + '\n')
+        
+        'output the interval relationships'
+        for ir in self.interval_relationships:
+            fh.write(ir + '\n')
+            
+        'output the role relationships'
+        for rr in self.role_relationships:
+            fh.write(rr + '\n')
+            
+        'output the grant statements'
+        for gs in self.grants:
+            fh.write(gs + '\n')
+            
+        'output the constant rules'
+        for cr in self.constant_rules:
+            fh.write(cr + '\n')               
+            
+        'output the variable rules'
+        for vr in self.variable_rules:
+            fh.write(vr + '\n')            
+                        
+                    
+        'now append the defined axmlt/alp language rules from file'
+        lrf = open(langrules, "r")
+        lr = lrf.readlines()
+        fh.writelines(lr)
+        lrf.close()        
+            
+        fh.close()
+
+    '------------------------------------END OF CLASS----------------------------------------------'        
+        
+########  SCRIPT BEGINNING  ########
+
+'''DEFAULT ARGS THAT WORK
+    self, n_subjects=100, n_roles=50, min_role_priv=1, max_role_priv=2, 
+    n_intervals=25, n_interval_rel=10,
+    n_documents=5, min_xpaths=1, max_xpaths=3,
+    n_grants=50, n_role_rel=20,
+    n_var_rules=10, n_var=2, n_pos_body=2, n_neg_body=2'''
+
+pbFileName = 'test.asp'
+gndFileName = 'ground'
+langRulesFile = 'axmlt_language_rules.asp'
+ansFileName = 'answerset'
+
+g = generator()
+str_time = 0
+
+'''Prepare Policy Base'''
+print "Preparing Policy Base..."
+str_time = time.time()
+g.createConstants()
+g.createRoles()
+g.createIntervalRelationships()
+g.createRoleRelationships()
+g.createGrantStatements()
+g.createConstantRules()
+g.createVariableRules()
+g.variable_rules = g.fixWeakVariables(g.variable_rules)
+g.constant_rules = g.fixWeakVariables(g.constant_rules)
+print "Done in %f ms" %((time.time()-str_time)*1000)
+
+'''Save Policy Base'''
+print "Saving Policy Base..."
+g.writePB(pbFileName, langRulesFile)
+
+'''Ground the Policy Base'''
+print "Grounding Policy Base..."
+str_time = time.time()
+gnd = subprocess.Popen([r"./gringo", r'--stats', pbFileName], stdout=subprocess.PIPE).communicate()[0] #0 is stdout, 1 is stderr
+print "Grounding done in %f ms" %((time.time()-str_time)*1000)
+print "Saving grounding to '%s'..." %(gndFileName)
+gndFile = open(gndFileName, "w+")
+gndFile.writelines(gnd)
+gndFile.close()
+
+'''Solve the Policy Base'''
+print "Attempting to solve the Policy Base..."
+str_time = time.time()
+ans = subprocess.Popen([r"./clasp", r'--stats', gndFileName], stdout=subprocess.PIPE).communicate()[0]
+print "Solving done in %f ms" %((time.time()-str_time)*1000)
+print "Saving answerset to '%s'" %(ansFileName)
+ansFile = open(ansFileName, "w+")
+ansFile.writelines(ans)
+ansFile.close()
+
+print "Completed...exiting"
+
+
+
+

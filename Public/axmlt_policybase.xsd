@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified"
+	targetNamespace="scm.uws.edu.au"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:axmlt="scm.uws.edu.au">
+
+	<xs:element name="policybase">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="rule" minOccurs="0"
+					maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="head-statement"
+								minOccurs="1" maxOccurs="1" type="axmlt:statement-types">
+							</xs:element>
+							<xs:element name="body-statement"
+								type="axmlt:statement-types" maxOccurs="unbounded"
+								minOccurs="0">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="statement-types">
+		<xs:choice>
+			<xs:element name="relationship-statement"
+				type="axmlt:relationship-atom" maxOccurs="1" minOccurs="1">
+			</xs:element>
+			<xs:element name="grant-statement" type="axmlt:grant-atom"
+				maxOccurs="1" minOccurs="1">
+			</xs:element>
+			<xs:element name="role-statement" type="axmlt:role-atom"
+				maxOccurs="1" minOccurs="1">
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="withAbsence" type="xs:boolean" use="optional" default="0"></xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="relationship-atom">
+		<xs:choice>
+			<xs:element name="below" type="axmlt:relationship-tuple" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="separate" type="axmlt:relationship-tuple" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="during" type="axmlt:relationship-tuple" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="starts" type="axmlt:relationship-tuple" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="finishes" type="axmlt:relationship-tuple" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="before" type="axmlt:relationship-tuple" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="overlap" type="axmlt:relationship-tuple" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="meets" type="axmlt:relationship-tuple" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="equal" type="axmlt:relationship-tuple" maxOccurs="1" minOccurs="1"></xs:element>
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="relationship-tuple">
+		<xs:sequence>
+			<xs:element name="value1" type="xs:string" maxOccurs="1"
+				minOccurs="1">
+			</xs:element>
+			<xs:element name="value2" type="xs:string" maxOccurs="1"
+				minOccurs="1">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="grant-atom">
+		<xs:sequence>
+
+			<xs:element name="role-name" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="subject" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="temporal-interval" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="role-atom">
+		<xs:sequence>
+			<xs:element name="role-name" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="sign" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+
+			<xs:element name="xpath-statement" type="axmlt:xpath-atom" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="privilege" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="xpath-atom">
+		<xs:sequence>
+			<xs:element name="document-name" type="xs:string"
+				maxOccurs="1" minOccurs="1">
+			</xs:element>
+			<xs:element name="xpath-expression" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

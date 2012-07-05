@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified"
+	targetNamespace="scm.uws.edu.au"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:axmlt="scm.uws.edu.au">
+
+	<xs:element name="queries">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="query" minOccurs="0"
+					maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="subject" minOccurs="1"
+								maxOccurs="1" type="xs:string">
+							</xs:element>
+							<xs:element name="xpath-statement"
+								type="axmlt:xpath-atom" maxOccurs="1" minOccurs="1">
+							</xs:element>
+							<xs:element name="privilege"
+								type="xs:string" maxOccurs="1" minOccurs="1">
+							</xs:element>
+							<xs:element name="temporal-interval"
+								type="xs:string" maxOccurs="1" minOccurs="1">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:complexType name="xpath-atom">
+		<xs:sequence>
+			<xs:element name="document-name" type="xs:string"
+				maxOccurs="1" minOccurs="1">
+			</xs:element>
+			<xs:element name="xpath-expression" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+
+
+</xs:schema>

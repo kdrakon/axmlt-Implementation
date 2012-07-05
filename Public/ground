@@ -1,0 +1,220 @@
+1 2 0 0
+1 3 0 0
+1 4 0 0
+1 5 0 0
+1 6 0 0
+1 7 0 0
+1 8 0 0
+1 9 0 0
+1 10 0 0
+1 11 0 0
+1 12 0 0
+1 13 0 0
+1 14 0 0
+1 15 0 0
+1 16 0 0
+1 17 0 0
+1 18 0 0
+1 19 0 0
+1 20 0 0
+1 21 0 0
+1 22 0 0
+1 23 0 0
+1 24 0 0
+1 25 0 0
+1 26 0 0
+1 27 0 0
+1 28 0 0
+1 29 0 0
+1 30 0 0
+1 31 0 0
+1 32 0 0
+1 33 0 0
+1 34 0 0
+1 35 0 0
+1 36 0 0
+1 37 0 0
+1 38 0 0
+1 39 0 0
+1 40 0 0
+1 41 0 0
+1 42 0 0
+1 43 0 0
+1 44 0 0
+1 45 0 0
+1 46 0 0
+1 47 0 0
+1 48 0 0
+1 49 0 0
+1 50 0 0
+1 51 0 0
+1 52 0 0
+1 53 0 0
+1 54 0 0
+1 55 0 0
+1 56 0 0
+1 57 0 0
+1 58 0 0
+1 59 0 0
+1 60 0 0
+1 61 0 0
+1 62 0 0
+1 63 0 0
+1 64 0 0
+1 65 0 0
+1 66 0 0
+1 67 0 0
+1 68 0 0
+1 69 0 0
+1 70 0 0
+1 71 0 0
+1 72 0 0
+1 73 0 0
+1 74 0 0
+1 75 0 0
+1 76 0 0
+1 77 0 0
+1 78 0 0
+1 79 0 0
+1 80 0 0
+1 81 0 0
+1 82 0 0
+1 83 0 0
+1 84 0 0
+1 85 0 0
+1 86 0 0
+1 87 0 0
+1 88 0 0
+1 89 0 0
+1 90 0 0
+1 91 0 0
+1 92 0 0
+1 93 0 0
+1 94 0 0
+1 95 0 0
+1 96 0 0
+1 97 0 0
+1 98 0 0
+1 99 0 0
+1 100 0 0
+1 101 0 0
+1 102 0 0
+1 103 0 0
+1 104 0 0
+1 105 0 0
+1 106 0 0
+1 107 0 0
+0
+2 roles(role0)
+57 roles(role1)
+56 roles(role2)
+55 roles(role3)
+54 roles(role4)
+53 roles(role5)
+52 roles(role6)
+51 roles(role7)
+50 roles(role8)
+49 roles(role9)
+3 subjects(subject0)
+101 subjects(subject1)
+100 subjects(subject2)
+99 subjects(subject3)
+98 subjects(subject4)
+97 subjects(subject5)
+96 subjects(subject6)
+95 subjects(subject7)
+94 subjects(subject8)
+93 subjects(subject9)
+92 subjects(subject10)
+91 subjects(subject11)
+90 subjects(subject12)
+89 subjects(subject13)
+88 subjects(subject14)
+87 subjects(subject15)
+86 subjects(subject16)
+85 subjects(subject17)
+84 subjects(subject18)
+83 subjects(subject19)
+4 xpaths(doc8)
+73 xpaths(doc9)
+72 xpaths(doc2)
+71 xpaths(doc3)
+70 xpaths(doc0)
+69 xpaths(doc1)
+68 xpaths(doc6)
+67 xpaths(doc7)
+66 xpaths(doc4)
+65 xpaths(doc5)
+61 documents(doc8)
+60 documents(doc9)
+37 documents(doc2)
+36 documents(doc3)
+5 documents(doc0)
+38 documents(doc1)
+63 documents(doc6)
+62 documents(doc7)
+11 documents(doc4)
+64 documents(doc5)
+6 tempints(int0)
+82 tempints(int1)
+81 tempints(int2)
+80 tempints(int3)
+79 tempints(int4)
+78 tempints(int5)
+77 tempints(int6)
+76 tempints(int7)
+75 tempints(int8)
+74 tempints(int9)
+21 role(role5,pp,doc7,doc7xpath8,write)
+12 role(role2,pp,doc1,doc1xpath3,write)
+15 role(role3,pp,doc6,doc6xpath0,write)
+33 role(role8,mm,doc1,doc1xpath0,read)
+14 role(role2,pp,doc2,doc2xpath1,write)
+19 role(role5,mm,doc4,doc4xpath0,read)
+25 role(role6,pp,doc8,doc8xpath0,read)
+18 role(role4,pp,doc9,doc9xpath2,read)
+23 role(role5,pp,doc4,doc4xpath0,write)
+8 role(role0,mm,doc4,doc4xpath0,read)
+13 role(role2,pp,doc3,doc3xpath1,read)
+17 role(role4,mm,doc4,doc4xpath2,write)
+30 role(role7,pp,doc5,doc5xpath3,read)
+7 role(role0,pp,doc5,doc5xpath3,read)
+31 role(role8,pp,doc3,doc3xpath0,write)
+22 role(role5,mm,doc8,doc8xpath0,write)
+27 role(role6,pp,doc7,doc7xpath1,read)
+16 role(role4,mm,doc5,doc5xpath0,write)
+32 role(role8,mm,doc3,doc3xpath1,read)
+29 role(role7,mm,doc8,doc8xpath0,read)
+34 role(role9,mm,doc1,doc1xpath2,read)
+28 role(role7,pp,doc8,doc8xpath0,read)
+26 role(role6,pp,doc6,doc6xpath0,write)
+9 role(role1,pp,doc9,doc9xpath0,write)
+24 role(role6,pp,doc5,doc5xpath0,write)
+10 role(role2,pp,doc4,doc4xpath1,write)
+35 below(role5,role3)
+20 below(role5,role9)
+40 separate(role0,role3)
+43 separate(role0,role5)
+45 separate(role1,role2)
+102 separate(role1,role7)
+103 separate(role2,role1)
+39 separate(role2,role9)
+104 separate(role3,role0)
+105 separate(role5,role0)
+41 separate(role5,role6)
+106 separate(role6,role5)
+42 separate(role6,role8)
+44 separate(role7,role1)
+46 separate(role8,role6)
+107 separate(role9,role2)
+47 signs(pp)
+58 signs(mm)
+48 privs(read)
+59 privs(write)
+0
+B+
+0
+B-
+1
+0
+1

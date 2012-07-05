@@ -1,0 +1,120 @@
+
+%-----------------------------------------------------------------------------------------------------------------------
+%CONSTANTS
+%-----------------------------------------------------------------------------------------------------------------------
+
+signs(pp; mm).
+privs(read; write).
+
+%-----------------------------------------------------------------------------------------------------------------------
+%LANGUAGE RULES
+%-----------------------------------------------------------------------------------------------------------------------
+
+%RBAC RELATIONSHIPS
+
+%role hierarchy implication
+below(A,C) :- below(A,B), below(B,C), roles(A), roles(B), roles(C).
+:- below(A, B), not roles(A), not roles(B).
+
+brole(X, SIGNY, DOCUMENTY, XPATHY, PRIVILEGEY) :- below(X, Y), roles(X), roles(Y), role(X, SIGNX, DOCUMENTX, XPATHX, PRIVILEGEX), role(Y, SIGNY, DOCUMENTY, XPATHY, PRIVILEGEY), signs(SIGNX), signs(SIGNY), privs(PRIVILEGEX), privs(PRIVILEGEY), documents(DOCUMENTX), documents(DOCUMENTY), xpaths(XPATHX), xpaths(XPATHY).
+
+%conflict resolution rule
+exist_neg(SUBJECT, DOCUMENT, XPATH, PRIVILEGE, INTERVAL) :- grant(SUBJECT, ROLENAME, INTERVAL), role(ROLENAME, mm, DOCUMENT, XPATH, PRIVILEGE), privs(PRIVILEGE), tempints(INTERVAL).
+
+%separation of duty relationship
+separate(X, Y) :- separate(Y, X), roles(X), roles(Y).
+
+%separation of duty rule
+sepduty_fail(SUBJECT) :- grant(SUBJECT, ROLEX, INTERVALA), grant(SUBJECT, ROLEY, INTERVALB), tempints(INTERVALA), tempints(INTERVALB), roles(ROLEX), roles(ROLEY), separate(ROLEX, ROLEY).
+
+%nonexistent role granting
+:- grant(SUBJECT, ROLE, INTERVAL), not roles(ROLE).
+
+%-----------------------------------------------------------------------------------------------------------------------
+
+%THE AUTHORISATION RULE
+
+%authorisation of subjects with roles with conflict resolution and separation of duty
+auth(SUBJECT, DOCUMENT, XPATH, PRIVILEGE, INTERVAL) :- grant(SUBJECT, ROLE, INTERVAL), subjects(SUBJECT), role(ROLE, SIGN, DOCUMENT, XPATH, PRIVILEGE), privs(PRIVILEGE), signs(SIGN), not exist_neg(SUBJECT, DOCUMENT, XPATH, PRIVILEGE, INTERVAL), not sepduty_fail(SUBJECT).
+
+auth(SUBJECT, DOCUMENT, XPATH, PRIVILEGE, INTERVAL) :- grant(SUBJECT, ROLE, INTERVAL), subjects(SUBJECT), brole(ROLE, SIGN, DOCUMENT, XPATH, PRIVILEGE), privs(PRIVILEGE), signs(SIGN), not exist_neg(SUBJECT, DOCUMENT, XPATH, PRIVILEGE, INTERVAL), not sepduty_fail(SUBJECT).
+
+
+%-----------------------------------------------------------------------------------------------------------------------
+
+%TEMPORAL INTERVAL RELATIONSHIPS AND IMPLICATIONS
+
+%temporal interval containment rule
+grant(SUBJECT, ROLE, INTERVALB) :- grant(SUBJECT, ROLE, INTERVALA), during(INTERVALB, INTERVALA), roles(ROLE), tempints(INTERVALA), tempints(INTERVALB), subjects(SUBJECT).
+
+%implicit relationships (for containment)
+during(A, B) :- starts(A, B), tempints(A), tempints(B).
+during(A, B) :- finishes(A, B), tempints(A), tempints(B).
+before(A, B) :- meets(A, B), tempints(A), tempints(B).
+
+before(A, C) :- before(A, B), before(B, C), tempints(A), tempints(B), tempints(C).
+during(A, C) :- during(A, B), during(B, C), tempints(A), tempints(B), tempints(C).
+starts(A, C) :- starts(A, B), starts(B, C), tempints(A), tempints(B), tempints(C).
+finishes(A, C) :- finishes(A, B), finishes(B, C), tempints(A), tempints(B), tempints(C).
+equal(A, C) :- equal(A, B), equal(B, C), tempints(A), tempints(B), tempints(C).
+
+%classically negated rules
+-before(A, B) :- during(A, B), tempints(A), tempints(B).
+-overlap(A, B) :- during(A, B), tempints(A), tempints(B).
+-meets(A, B) :- during(A, B), tempints(A), tempints(B).
+-equal(A, B) :- during(A, B), tempints(A), tempints(B).
+
+-during(A, B) :- before(A, B), tempints(A), tempints(B).
+-during(A, B) :- overlap(A, B), tempints(A), tempints(B).
+-during(A, B) :- meets(A, B), tempints(A), tempints(B).
+-during(A, B) :- equal(A, B), tempints(A), tempints(B).
+
+-before(A, B) :- overlap(A, B), tempints(A), tempints(B).
+-meets(A, B) :- overlap(A, B), tempints(A), tempints(B).
+-equal(A, B) :- overlap(A, B), tempints(A), tempints(B).
+
+-overlap(A, B) :- before(A, B), tempints(A), tempints(B).
+-equal(A, B) :- before(A, B), tempints(A), tempints(B).
+
+-equal(A, B) :- meets(A, B), tempints(A), tempints(B).
+-overlap(A, B) :- meets(A, B), tempints(A), tempints(B).
+
+-before(A, B) :- equal(A, B), tempints(A), tempints(B).
+-overlap(A, B) :- equal(A, B), tempints(A), tempints(B).
+-meets(A, B) :- equal(A, B), tempints(A), tempints(B).
+
+:- -during(A, B), during(A, B), tempints(A), tempints(B).
+:- -before(A, B), before(A, B), tempints(A), tempints(B).
+:- -overlap(A, B), overlap(A, B), tempints(A), tempints(B).
+:- -meets(A, B), meets(A, B), tempints(A), tempints(B).
+:- -equal(A, B), equal(A, B), tempints(A), tempints(B).
+
+%bounded temporal interval rule
+during(D, A) :- starts(B, A), finishes(C, A), before(B, D), before(D, C), tempints(A), tempints(B), tempints(C), tempints(D).
+
+%equality rules
+during(C, B) :- equal(A, B), during(C, A), tempints(A), tempints(B), tempints(C).
+starts(C, B) :- equal(A, B), starts(C, A), tempints(A), tempints(B), tempints(C).
+finishes(C, B) :- equal(A, B), finishes(C, A), tempints(A), tempints(B), tempints(C).
+before(C, B) :- equal(A, B), before(C, A), tempints(A), tempints(B), tempints(C).
+overlap(C, B) :- equal(A, B), overlap(C, A), tempints(A), tempints(B), tempints(C).
+meets(C, B) :- equal(A, B), meets(C, A), tempints(A), tempints(B), tempints(C).
+
+
+%-----------------------------------------------------------------------------------------------------------------------
+
+c(1..100).
+
+enum(X, Y, J) :- grant(X, Y, Z), subject(X), roles(Y), tempints(Z), not -enum(X, Y, J), c(J).
+-enum(X, Y, J) :- enum(X, Y, K), J != K, c(J), c(K), subject(X), roles(Y).
+-enum(X, Y, J) :- enum(Z, Y, J), X != Z, subject(X), subject(Z), roles(Y), c(J).
+
+one is assigned(Y) :- enum(X, Y, 1), subject(X), roles(Y).
+:- grant(X, Y, Z), not one is assigned(Y), subject(X), roles(Y), tempints(Z).
+
+numbered(Y, J) :- enum(X, Y, J), subject(X), roles(Y), c(J).
+:- numbered(Y, J+1), not numbered(Y, J), J>=1, c(J), roles(Y).
+
+card(Y, Q) ← numbered(Y, Q), not numbered(Y, Q+1), roles(Y), c(Q).
+
+

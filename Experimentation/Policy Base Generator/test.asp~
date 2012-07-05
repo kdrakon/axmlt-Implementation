@@ -1,0 +1,221 @@
+roles(role0;role1;role2;role3;role4;role5;role6;role7;role8;role9).
+subjects(subject0;subject1;subject2;subject3;subject4;subject5;subject6;subject7;subject8;subject9;subject10;subject11;subject12;subject13;subject14;subject15;subject16;subject17;subject18;subject19).
+xpaths(doc8xpath0;doc8xpath1;doc8xpath2;doc9xpath0;doc9xpath1;doc9xpath2;doc9xpath3;doc9xpath4;doc2xpath0;doc2xpath1;doc2xpath2;doc3xpath0;doc3xpath1;doc3xpath2;doc0xpath0;doc0xpath1;doc0xpath2;doc0xpath3;doc0xpath4;doc1xpath0;doc1xpath1;doc6xpath0;doc6xpath1;doc7xpath0;doc7xpath1;doc7xpath2;doc7xpath3;doc4xpath0;doc4xpath1;doc5xpath0;doc5xpath1;doc5xpath2;doc5xpath3).
+documents(doc0;doc1;doc2;doc3;doc4;doc5;doc6;doc7;doc8;doc9).
+tempints(int0;int1;int2;int3;int4;int5;int6;int7;int8;int9;int10;int11;int12;int13;int14;int15;int16;int17;int18;int19).
+
+role(role0,pp,doc7,doc7xpath2,read).
+role(role0,pp,doc2,doc2xpath1,write).
+role(role0,pp,doc7,doc7xpath0,read).
+role(role1,pp,doc0,doc0xpath4,read).
+role(role2,pp,doc5,doc5xpath0,write).
+role(role2,pp,doc4,doc4xpath0,read).
+role(role2,mm,doc5,doc5xpath1,read).
+role(role3,mm,doc2,doc2xpath2,write).
+role(role3,pp,doc7,doc7xpath2,write).
+role(role3,pp,doc9,doc9xpath1,write).
+role(role4,mm,doc4,doc4xpath0,write).
+role(role5,mm,doc1,doc1xpath0,write).
+role(role6,pp,doc4,doc4xpath0,write).
+role(role7,pp,doc5,doc5xpath0,read).
+role(role7,mm,doc4,doc4xpath1,read).
+role(role7,pp,doc0,doc0xpath3,read).
+role(role8,pp,doc6,doc6xpath0,read).
+role(role9,pp,doc7,doc7xpath2,read).
+role(role9,mm,doc9,doc9xpath4,read).
+role(role9,mm,doc6,doc6xpath0,write).
+role(role9,mm,doc8,doc8xpath1,write).
+meets(int3,int11).
+before(int7,int8).
+finishes(int15,int7).
+equal(int18,int15).
+during(int9,int6).
+equal(int18,int7).
+overlap(int19,int12).
+meets(int13,int14).
+starts(int5,int7).
+starts(int4,int5).
+below(role3,role4).
+separate(role7,role1).
+separate(role4,role1).
+below(role4,role9).
+separate(role7,role3).
+separate(role4,role5).
+below(role5,role9).
+below(role3,role5).
+below(role7,role1).
+below(role2,role8).
+below(role0,role3).
+separate(role2,role9).
+separate(role2,role6).
+below(role8,role4).
+separate(role2,role3).
+below(role9,role8).
+separate(role6,role9).
+below(role4,role8).
+below(role7,role5).
+separate(role5,role8).
+grant(subject7,role2,int1).
+grant(subject15,role6,int10).
+grant(subject6,role8,int2).
+grant(subject1,role3,int5).
+grant(subject2,role7,int3).
+grant(subject18,role2,int17).
+grant(subject8,role7,int12).
+grant(subject13,role1,int18).
+grant(subject14,role4,int10).
+grant(subject12,role8,int9).
+grant(subject0,role4,int13).
+grant(subject6,role7,int0).
+grant(subject19,role8,int18).
+grant(subject6,role3,int5).
+grant(subject18,role6,int14).
+grant(subject0,role2,int6).
+grant(subject4,role1,int15).
+grant(subject11,role9,int5).
+grant(subject17,role1,int14).
+grant(subject2,role8,int8).
+grant(subject18,role2,int17).
+grant(subject12,role0,int10).
+grant(subject6,role6,int11).
+grant(subject13,role7,int2).
+grant(subject0,role0,int2).
+grant(subject18,role8,int1).
+grant(subject10,role3,int12).
+grant(subject5,role8,int17).
+grant(subject11,role8,int1).
+grant(subject17,role4,int2).
+grant(subject17,role0,int10).
+grant(subject19,role2,int15).
+grant(subject18,role1,int12).
+grant(subject8,role0,int18).
+grant(subject4,role3,int12).
+grant(subject9,role5,int16).
+grant(subject16,role6,int2).
+grant(subject14,role1,int4).
+grant(subject17,role9,int5).
+grant(subject17,role9,int7).
+grant(subject13,role3,int10):-grant(subject9,role5,int1),below(role5,role3),not separate(role4,role3).
+grant(subject13,role5,int10):-before(int18,int10),grant(subject3,role0,int18),not separate(role1,role5),not grant(subject15,role1,int9).
+grant(subject12,role2,int15):-separate(role5,role2),equal(int11,int15),not grant(subject19,role4,int4).
+grant(subject5,role4,int16):-below(role6,role4),grant(subject3,role6,int15),not starts(int15,int16),not grant(subject3,role1,int15).
+grant(subject13,role2,int9):-grant(subject3,role4,int4),finishes(int4,int9),not equal(int12,int9),not finishes(int12,int9).
+grant(subject0,role1,int8):-grant(subject5,role3,int0),not equal(int6,int8),not grant(subject14,role0,int6).
+grant(subject14,role1,int5):-below(role2,role1),separate(role2,role1),not during(int9,int5),not starts(int9,int5).
+grant(subject8,role2,int10):-overlap(int3,int10),grant(subject13,role0,int3),not grant(subject9,role6,int7),not starts(int7,int10).
+grant(subject16,role4,int9):-overlap(int4,int9),below(role8,role4),not during(int2,int9),not separate(role0,role4).
+grant(subject18,role1,int19):-meets(int9,int19),overlap(int9,int19),not separate(role8,role1),not below(role8,role1).
+grant(subject7,R,int2):-not equal(int4,int2),not starts(int4,int2), roles(R).
+grant(subject6,R,int3):-grant(subject2,R,int9),not grant(subject16,R,int4), roles(R).
+grant(subject6,R,int0):-not grant(subject18,R,int13), roles(R).
+grant(S,role6,int11):-separate(role5,role6),grant(S,role5,int16),not below(role1,role6),not grant(S,role1,int2), subjects(S).
+grant(S,role1,int16):-separate(role5,role1),not grant(S,role6,int19),not before(int19,int16), subjects(S).
+grant(subject11,R,int15):-overlap(int11,int15),not grant(subject8,R,int7), roles(R).
+grant(S,role2,int16):-separate(role1,role2),not separate(role7,role2),not below(role7,role2), subjects(S).
+grant(S,role5,int0):-grant(S,role8,int19),during(int19,int0),not grant(S,role0,int0), subjects(S).
+grant(S,role2,int18):-below(role9,role2),finishes(int1,int18),not separate(role8,role2),not grant(S,role8,int19), subjects(S).
+grant(subject6,role7,I):-grant(subject17,role1,I),below(role1,role7),not grant(subject13,role0,I), tempints(I).
+
+%-----------------------------------------------------------------------------------------------------------------------
+%CONSTANTS
+%-----------------------------------------------------------------------------------------------------------------------
+
+signs(pp; mm).
+privs(read; write).
+
+%-----------------------------------------------------------------------------------------------------------------------
+%LANGUAGE RULES
+%-----------------------------------------------------------------------------------------------------------------------
+
+%RBAC RELATIONSHIPS
+
+%role hierarchy implication
+below(A,C) :- below(A,B), below(B,C), roles(A), roles(B), roles(C).
+:- below(A, B), not roles(A), not roles(B).
+brole(X, SIGNY, DOCUMENTY, XPATHY, PRIVILEGEY) :- below(X, Y), roles(X), roles(Y), role(X, SIGNX, DOCUMENTX, XPATHX, PRIVILEGEX), role(Y, SIGNY, DOCUMENTY, XPATHY, PRIVILEGEY), signs(SIGNX), signs(SIGNY), privs(PRIVILEGEX), privs(PRIVILEGEY), documents(DOCUMENTX), documents(DOCUMENTY), xpaths(XPATHX), xpaths(XPATHY).
+
+%conflict resolution rule
+exist_neg(SUBJECT, DOCUMENT, XPATH, PRIVILEGE, INTERVAL) :- grant(SUBJECT, ROLENAME, INTERVAL), role(ROLENAME, mm, DOCUMENT, XPATH, PRIVILEGE), privs(PRIVILEGE), tempints(INTERVAL).
+
+%separation of duty relationship
+separate(X, Y) :- separate(Y, X), roles(X), roles(Y).
+
+%separation of duty rule
+sepduty_fail(SUBJECT) :- grant(SUBJECT, ROLEX, INTERVALA), grant(SUBJECT, ROLEY, INTERVALB), tempints(INTERVALA), tempints(INTERVALB), roles(ROLEX), roles(ROLEY), separate(ROLEX, ROLEY).
+
+%nonexistent role granting
+:- grant(SUBJECT, ROLE, INTERVAL), not roles(ROLE).
+
+%-----------------------------------------------------------------------------------------------------------------------
+
+%THE AUTHORISATION RULE
+
+%authorisation of subjects with roles with conflict resolution and separation of duty
+auth(SUBJECT, DOCUMENT, XPATH, PRIVILEGE, INTERVAL) :- grant(SUBJECT, ROLE, INTERVAL), subjects(SUBJECT), role(ROLE, SIGN, DOCUMENT, XPATH, PRIVILEGE), privs(PRIVILEGE), signs(SIGN), not exist_neg(SUBJECT, DOCUMENT, XPATH, PRIVILEGE, INTERVAL), not sepduty_fail(SUBJECT).
+
+
+
+
+%-----------------------------------------------------------------------------------------------------------------------
+
+%TEMPORAL INTERVAL RELATIONSHIPS AND IMPLICATIONS
+
+%temporal interval containment rule
+grant(SUBJECT, ROLE, INTERVALB) :- grant(SUBJECT, ROLE, INTERVALA), during(INTERVALB, INTERVALA), roles(ROLE), tempints(INTERVALA), tempints(INTERVALB), subjects(SUBJECT).
+
+%implicit relationships (for containment)
+during(A, B) :- starts(A, B), tempints(A), tempints(B).
+during(A, B) :- finishes(A, B), tempints(A), tempints(B).
+before(A, B) :- meets(A, B), tempints(A), tempints(B).
+
+before(A, C) :- before(A, B), before(B, C), tempints(A), tempints(B), tempints(C).
+during(A, C) :- during(A, B), during(B, C), tempints(A), tempints(B), tempints(C).
+starts(A, C) :- starts(A, B), starts(B, C), tempints(A), tempints(B), tempints(C).
+finishes(A, C) :- finishes(A, B), finishes(B, C), tempints(A), tempints(B), tempints(C).
+equal(A, C) :- equal(A, B), equal(B, C), tempints(A), tempints(B), tempints(C).
+
+%classically negated rules
+-before(A, B) :- during(A, B), tempints(A), tempints(B).
+-overlap(A, B) :- during(A, B), tempints(A), tempints(B).
+-meets(A, B) :- during(A, B), tempints(A), tempints(B).
+-equal(A, B) :- during(A, B), tempints(A), tempints(B).
+
+-during(A, B) :- before(A, B), tempints(A), tempints(B).
+-during(A, B) :- overlap(A, B), tempints(A), tempints(B).
+-during(A, B) :- meets(A, B), tempints(A), tempints(B).
+-during(A, B) :- equal(A, B), tempints(A), tempints(B).
+
+-before(A, B) :- overlap(A, B), tempints(A), tempints(B).
+-meets(A, B) :- overlap(A, B), tempints(A), tempints(B).
+-equal(A, B) :- overlap(A, B), tempints(A), tempints(B).
+
+-overlap(A, B) :- before(A, B), tempints(A), tempints(B).
+-equal(A, B) :- before(A, B), tempints(A), tempints(B).
+
+-equal(A, B) :- meets(A, B), tempints(A), tempints(B).
+-overlap(A, B) :- meets(A, B), tempints(A), tempints(B).
+
+-before(A, B) :- equal(A, B), tempints(A), tempints(B).
+-overlap(A, B) :- equal(A, B), tempints(A), tempints(B).
+-meets(A, B) :- equal(A, B), tempints(A), tempints(B).
+
+:- -during(A, B), during(A, B), tempints(A), tempints(B).
+:- -before(A, B), before(A, B), tempints(A), tempints(B).
+:- -overlap(A, B), overlap(A, B), tempints(A), tempints(B).
+:- -meets(A, B), meets(A, B), tempints(A), tempints(B).
+:- -equal(A, B), equal(A, B), tempints(A), tempints(B).
+
+%bounded temporal interval rule
+during(D, A) :- starts(B, A), finishes(C, A), before(B, D), before(D, C), tempints(A), tempints(B), tempints(C), tempints(D).
+
+%equality rules
+during(C, B) :- equal(A, B), during(C, A), tempints(A), tempints(B), tempints(C).
+starts(C, B) :- equal(A, B), starts(C, A), tempints(A), tempints(B), tempints(C).
+finishes(C, B) :- equal(A, B), finishes(C, A), tempints(A), tempints(B), tempints(C).
+before(C, B) :- equal(A, B), before(C, A), tempints(A), tempints(B), tempints(C).
+overlap(C, B) :- equal(A, B), overlap(C, A), tempints(A), tempints(B), tempints(C).
+meets(C, B) :- equal(A, B), meets(C, A), tempints(A), tempints(B), tempints(C).
+
+
+%-----------------------------------------------------------------------------------------------------------------------
+
